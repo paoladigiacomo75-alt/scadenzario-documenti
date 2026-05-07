@@ -16,8 +16,7 @@ const INIT_CATS = {
 // ── Supabase config — filled after setup ──────────────────────────────────────
 // Replace these two values with your Supabase project URL and anon key
 const SUPABASE_URL = "https://mswwzubfhsbcufsbdsde.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1zd3d6dWJmaHNiY3Vmc2Jkc2RlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgxNDk2NzUsImV4cCI6MjA5MzcyNTY3NX0.WYDsbd7RecEDxnMDilYqJIyuTX1gZxSXmmSZpGwWHLI
-";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1zd3d6dWJmaHNiY3Vmc2Jkc2RlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgxNDk2NzUsImV4cCI6MjA5MzcyNTY3NX0.WYDsbd7RecEDxnMDilYqJIyuTX1gZxSXmmSZpGwWHLI";
 
 const sb = {
   async get(table) {
