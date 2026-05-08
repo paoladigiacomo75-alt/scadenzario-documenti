@@ -2,8 +2,8 @@ import { useState, useMemo, useEffect, useCallback } from "react";
 import * as XLSX from "xlsx";
 
 // ── Supabase config from .env ─────────────────────────────────────────────────
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
-const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_KEY;
+const SUPABASE_URL = "https://mswwzubfhsbcufsbdsde.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1zd3d6dWJmaHNiY3Vmc2Jkc2RlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgxNDk2NzUsImV4cCI6MjA5MzcyNTY3NX0.WYDsbd7RecEDxnMDilYqJIyuTX1gZxSXmmSZpGwWHLI";
 
 // ── Supabase API helpers ──────────────────────────────────────────────────────
 const api = {
