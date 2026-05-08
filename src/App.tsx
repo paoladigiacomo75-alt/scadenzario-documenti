@@ -112,17 +112,17 @@ function exportExcel(docs,clients,flags,portali){
 
 // ── Design ────────────────────────────────────────────────────────────────────
 const C={pageBg:"#f0f0f0",headerBg:"#2c2c2c",rowEven:"#f8f8f8",rowOdd:"#ffffff",label:"#555",mutedText:"#888",matrixCellBg:"#3a3a3a",matrixHeaderBg:"#2c2c2c"};
-const IS={width:"100%",background:"#fff",border:"1px solid #bbb",borderRadius:7,padding:"9px 13px",color:"#222",fontSize:13,outline:"none",fontFamily:"'IBM Plex Mono',monospace",boxSizing:"border-box"};
+const IS={width:"100%",background:"#fff",border:"1px solid #bbb",borderRadius:7,padding:"9px 13px",color:"#222",fontSize:15,outline:"none",fontFamily:"'IBM Plex Mono',monospace",boxSizing:"border-box"};
 const TA={...IS,resize:"vertical",minHeight:72,fontFamily:"'IBM Plex Sans',sans-serif"};
 
-function Field({label,children,hint}){return(<div style={{marginBottom:14}}><label style={{display:"block",fontSize:10,fontWeight:700,letterSpacing:"0.08em",textTransform:"uppercase",color:C.label,marginBottom:5}}>{label}</label>{children}{hint&&<div style={{fontSize:10,color:C.mutedText,marginTop:3,fontStyle:"italic"}}>{hint}</div>}</div>);}
+function Field({label,children,hint}){return(<div style={{marginBottom:14}}><label style={{display:"block",fontSize:12,fontWeight:700,letterSpacing:"0.08em",textTransform:"uppercase",color:C.label,marginBottom:5}}>{label}</label>{children}{hint&&<div style={{fontSize:12,color:C.mutedText,marginTop:3,fontStyle:"italic"}}>{hint}</div>}</div>);}
 function Btn({onClick,children,variant="primary",small,full,disabled}){
   const V={primary:{background:"#2c2c2c",color:"#fff"},success:{background:"#2e7d32",color:"#fff"},danger:{background:"#c62828",color:"#fff"},ghost:{background:"transparent",color:"#555",border:"1px solid #ccc"},accent:{background:"#455a64",color:"#fff"}};
   return(<button onClick={onClick} disabled={disabled} style={{...V[variant],border:V[variant].border||"none",borderRadius:7,cursor:disabled?"not-allowed":"pointer",fontWeight:700,fontSize:small?11:13,padding:small?"5px 12px":"10px 20px",letterSpacing:"0.03em",transition:"opacity 0.15s",fontFamily:"'IBM Plex Mono',monospace",width:full?"100%":"auto",opacity:disabled?0.4:1}} onMouseOver={e=>{if(!disabled)e.currentTarget.style.opacity=0.8;}} onMouseOut={e=>{e.currentTarget.style.opacity=disabled?0.4:1;}}>{children}</button>);
 }
 function Overlay({children}){return(<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.55)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:2000,backdropFilter:"blur(4px)"}}>{children}</div>);}
-function ModalBox({title,onClose,children,width=500}){return(<Overlay><div style={{background:"#fff",border:"1px solid #ccc",borderRadius:14,padding:28,width,maxWidth:"96%",boxShadow:"0 16px 48px rgba(0,0,0,0.18)",maxHeight:"92vh",overflowY:"auto"}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20}}><span style={{fontFamily:"'DM Serif Display',serif",fontSize:18,color:"#222"}}>{title}</span><button onClick={onClose} style={{background:"none",border:"none",color:"#888",fontSize:22,cursor:"pointer",lineHeight:1}}>✕</button></div>{children}</div></Overlay>);}
-function ConfirmDialog({msg,onConfirm,onCancel}){return(<Overlay><div style={{background:"#fff",border:"1px solid #e57373",borderRadius:13,padding:32,maxWidth:420,width:"92%"}}><div style={{fontSize:32,textAlign:"center",marginBottom:10}}>⚠️</div><p style={{textAlign:"center",color:"#333",fontSize:14,lineHeight:1.6,marginBottom:26,whiteSpace:"pre-line"}}>{msg}</p><div style={{display:"flex",gap:12,justifyContent:"center"}}><Btn onClick={onCancel} variant="ghost">Annulla</Btn><Btn onClick={onConfirm} variant="danger">Elimina</Btn></div></div></Overlay>);}
+function ModalBox({title,onClose,children,width=500}){return(<Overlay><div style={{background:"#fff",border:"1px solid #ccc",borderRadius:14,padding:28,width,maxWidth:"96%",boxShadow:"0 16px 48px rgba(0,0,0,0.18)",maxHeight:"92vh",overflowY:"auto"}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20}}><span style={{fontFamily:"'DM Serif Display',serif",fontSize:20,color:"#222"}}>{title}</span><button onClick={onClose} style={{background:"none",border:"none",color:"#888",fontSize:24,cursor:"pointer",lineHeight:1}}>✕</button></div>{children}</div></Overlay>);}
+function ConfirmDialog({msg,onConfirm,onCancel}){return(<Overlay><div style={{background:"#fff",border:"1px solid #e57373",borderRadius:13,padding:32,maxWidth:420,width:"92%"}}><div style={{fontSize:34,textAlign:"center",marginBottom:10}}>⚠️</div><p style={{textAlign:"center",color:"#333",fontSize:16,lineHeight:1.6,marginBottom:26,whiteSpace:"pre-line"}}>{msg}</p><div style={{display:"flex",gap:12,justifyContent:"center"}}><Btn onClick={onCancel} variant="ghost">Annulla</Btn><Btn onClick={onConfirm} variant="danger">Elimina</Btn></div></div></Overlay>);}
 
 function EditDocModal({doc,cats,onSave,onClose}){
   const [form,setForm]=useState({...doc,durata:String(doc.durata)});
@@ -131,7 +131,7 @@ function EditDocModal({doc,cats,onSave,onClose}){
   const days=exp?diffDays(exp):null;
   const s=stato({...form,durata:+form.durata}),sc=s?statoColor(s):null;
   return(<ModalBox title="✏️  Modifica documento" onClose={onClose}>
-    {s&&<div style={{background:sc.flagBg,border:`1px solid ${sc.bg}`,borderRadius:9,padding:"9px 14px",marginBottom:16,display:"flex",gap:10,alignItems:"center",flexWrap:"wrap"}}><span style={{background:sc.bg,color:sc.text,borderRadius:5,padding:"2px 9px",fontSize:11,fontWeight:800}}>{s}</span>{exp&&<span style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:11,color:"#555"}}>Scade: {fmtDate(exp)}</span>}{days!==null&&<span style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:11,fontWeight:700,color:sc.bg}}>{days} gg</span>}</div>}
+    {s&&<div style={{background:sc.flagBg,border:`1px solid ${sc.bg}`,borderRadius:9,padding:"9px 14px",marginBottom:16,display:"flex",gap:10,alignItems:"center",flexWrap:"wrap"}}><span style={{background:sc.bg,color:sc.text,borderRadius:5,padding:"2px 9px",fontSize:13,fontWeight:800}}>{s}</span>{exp&&<span style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:13,color:"#555"}}>Scade: {fmtDate(exp)}</span>}{days!==null&&<span style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:13,fontWeight:700,color:sc.bg}}>{days} gg</span>}</div>}
     <Field label="Codice" hint="Non modificabile"><input style={{...IS,opacity:0.4,cursor:"not-allowed"}} value={form.id} readOnly/></Field>
     <Field label="Categoria"><select style={IS} value={form.cat} onChange={upd("cat")}>{Object.values(cats).sort().map(c=><option key={c} value={c}>{c}</option>)}</select></Field>
     <Field label="Nome documento *"><input style={IS} value={form.nome} onChange={upd("nome")} autoFocus/></Field>
@@ -143,7 +143,7 @@ function EditDocModal({doc,cats,onSave,onClose}){
 function EditClientModal({name,docs,flags,onSave,onClose}){
   const [nome,setNome]=useState(name);
   const cnt=docs.filter(d=>flags[flagKey(d.id,name)]).length;
-  return(<ModalBox title="✏️  Modifica portale" onClose={onClose} width={420}><div style={{background:"#f5f5f5",border:"1px solid #ddd",borderRadius:9,padding:"9px 14px",marginBottom:16,fontSize:12,color:"#555"}}>Documenti associati: <strong>{cnt}</strong></div><Field label="Nome portale *"><input style={IS} value={nome} onChange={e=>setNome(e.target.value)} autoFocus/></Field><div style={{display:"flex",gap:10,marginTop:20}}><Btn onClick={onClose} variant="ghost" full>Annulla</Btn><Btn onClick={()=>{if(!nome.trim())return;onSave(nome.trim());}} variant="success" full>💾  Salva</Btn></div></ModalBox>);
+  return(<ModalBox title="✏️  Modifica portale" onClose={onClose} width={420}><div style={{background:"#f5f5f5",border:"1px solid #ddd",borderRadius:9,padding:"9px 14px",marginBottom:16,fontSize:14,color:"#555"}}>Documenti associati: <strong>{cnt}</strong></div><Field label="Nome portale *"><input style={IS} value={nome} onChange={e=>setNome(e.target.value)} autoFocus/></Field><div style={{display:"flex",gap:10,marginTop:20}}><Btn onClick={onClose} variant="ghost" full>Annulla</Btn><Btn onClick={()=>{if(!nome.trim())return;onSave(nome.trim());}} variant="success" full>💾  Salva</Btn></div></ModalBox>);
 }
 function NewCatModal({cats,onSave,onClose}){
   const [prefix,setPrefix]=useState(""),[ label,setLabel]=useState(""),[ err,setErr]=useState("");
@@ -151,9 +151,9 @@ function NewCatModal({cats,onSave,onClose}){
   return(<ModalBox title="➕  Nuova categoria" onClose={onClose} width={440}>
     <Field label="Codice *"><input style={IS} value={prefix} onChange={e=>setPrefix(e.target.value.toUpperCase())} placeholder="es. MKT" maxLength={6} autoFocus/></Field>
     <Field label="Nome *"><input style={IS} value={label} onChange={e=>setLabel(e.target.value)} placeholder="es. Marketing"/></Field>
-    {err&&<div style={{background:"#fff3e0",border:"1px solid #ffb74d",borderRadius:8,padding:"9px 13px",fontSize:12,color:"#e65100",marginBottom:12}}>{err}</div>}
-    {prefix.trim()&&label.trim()&&!err&&<div style={{background:"#e8f5e9",border:"1px solid #a5d6a7",borderRadius:8,padding:"9px 13px",fontSize:12,color:"#1b5e20",marginBottom:12}}>✔ <strong>{label.trim()}</strong> ({prefix.trim()}) — primo codice: <strong>{prefix.trim()}-001</strong></div>}
-    <details style={{marginBottom:16}}><summary style={{fontSize:11,color:"#888",cursor:"pointer"}}>Categorie esistenti</summary><div style={{marginTop:8,display:"flex",flexWrap:"wrap",gap:6}}>{Object.entries(cats).sort((a,b)=>a[0].localeCompare(b[0])).map(([k,v])=>(<span key={k} style={{background:"#f0f0f0",border:"1px solid #ddd",borderRadius:5,padding:"2px 8px",fontSize:11,fontFamily:"'IBM Plex Mono',monospace"}}><strong>{k}</strong> → {v}</span>))}</div></details>
+    {err&&<div style={{background:"#fff3e0",border:"1px solid #ffb74d",borderRadius:8,padding:"9px 13px",fontSize:14,color:"#e65100",marginBottom:12}}>{err}</div>}
+    {prefix.trim()&&label.trim()&&!err&&<div style={{background:"#e8f5e9",border:"1px solid #a5d6a7",borderRadius:8,padding:"9px 13px",fontSize:14,color:"#1b5e20",marginBottom:12}}>✔ <strong>{label.trim()}</strong> ({prefix.trim()}) — primo codice: <strong>{prefix.trim()}-001</strong></div>}
+    <details style={{marginBottom:16}}><summary style={{fontSize:13,color:"#888",cursor:"pointer"}}>Categorie esistenti</summary><div style={{marginTop:8,display:"flex",flexWrap:"wrap",gap:6}}>{Object.entries(cats).sort((a,b)=>a[0].localeCompare(b[0])).map(([k,v])=>(<span key={k} style={{background:"#f0f0f0",border:"1px solid #ddd",borderRadius:5,padding:"2px 8px",fontSize:13,fontFamily:"'IBM Plex Mono',monospace"}}><strong>{k}</strong> → {v}</span>))}</div></details>
     <div style={{display:"flex",gap:10}}><Btn onClick={onClose} variant="ghost" full>Annulla</Btn><Btn onClick={validate} variant="success" full>✚  Crea</Btn></div>
   </ModalBox>);
 }
@@ -166,24 +166,24 @@ function PortaleModal({portale,onSave,onClose}){
     <Field label="Nome *"><input style={IS} value={form.nome} onChange={upd("nome")} autoFocus placeholder="es. ENEL"/></Field>
     <Field label="URL portale"><input style={IS} value={form.url} onChange={upd("url")} placeholder="https://..."/></Field>
     <Field label="Username / Email"><input style={IS} value={form.username} onChange={upd("username")} placeholder="es. commerciale@azienda.it"/></Field>
-    <Field label="Password"><div style={{position:"relative"}}><input type={showPwd?"text":"password"} style={{...IS,paddingRight:40}} value={form.password} onChange={upd("password")} placeholder="••••••••"/><button onClick={()=>setShowPwd(s=>!s)} style={{position:"absolute",right:10,top:"50%",transform:"translateY(-50%)",background:"none",border:"none",cursor:"pointer",color:"#888",fontSize:16}}>{showPwd?"🙈":"👁"}</button></div></Field>
-    <Field label={`Note (max 150 parole — ${wc}/150)`}><textarea style={{...TA,borderColor:wc>150?"#e53935":"#bbb"}} value={form.note} onChange={e=>{const w=e.target.value.trim().split(/\s+/).filter(Boolean);if(w.length<=150||e.target.value.length<form.note.length)upd("note")(e);}} placeholder="Note sul portale..."/>{wc>150&&<div style={{fontSize:10,color:"#e53935",marginTop:3}}>Limite superato.</div>}</Field>
+    <Field label="Password"><div style={{position:"relative"}}><input type={showPwd?"text":"password"} style={{...IS,paddingRight:40}} value={form.password} onChange={upd("password")} placeholder="••••••••"/><button onClick={()=>setShowPwd(s=>!s)} style={{position:"absolute",right:10,top:"50%",transform:"translateY(-50%)",background:"none",border:"none",cursor:"pointer",color:"#888",fontSize:18}}>{showPwd?"🙈":"👁"}</button></div></Field>
+    <Field label={`Note (max 150 parole — ${wc}/150)`}><textarea style={{...TA,borderColor:wc>150?"#e53935":"#bbb"}} value={form.note} onChange={e=>{const w=e.target.value.trim().split(/\s+/).filter(Boolean);if(w.length<=150||e.target.value.length<form.note.length)upd("note")(e);}} placeholder="Note sul portale..."/>{wc>150&&<div style={{fontSize:12,color:"#e53935",marginTop:3}}>Limite superato.</div>}</Field>
     <div style={{display:"flex",gap:10,marginTop:20}}><Btn onClick={onClose} variant="ghost" full>Annulla</Btn><Btn onClick={()=>{if(!form.nome.trim()||wc>150)return;onSave(form);}} variant="success" full>💾  Salva</Btn></div>
   </ModalBox>);
 }
-function MascheraCard({num,title,subtitle,color,onSubmit,btnLabel,children}){return(<div style={{background:"#fff",borderRadius:13,border:"1px solid #ddd",overflow:"hidden",boxShadow:"0 2px 8px rgba(0,0,0,0.06)"}}><div style={{background:`${color}18`,borderBottom:`2px solid ${color}`,padding:"15px 20px",display:"flex",alignItems:"center",gap:12}}><div style={{width:32,height:32,borderRadius:"50%",background:color,display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'DM Serif Display',serif",fontSize:16,color:"#fff",flexShrink:0}}>{num}</div><div><div style={{fontFamily:"'DM Serif Display',serif",fontSize:15,color:"#222"}}>{title}</div><div style={{fontSize:10,color:"#888",marginTop:1}}>{subtitle}</div></div></div><div style={{padding:"18px 20px"}}>{children}<button onClick={onSubmit} style={{width:"100%",background:color,border:"none",borderRadius:8,padding:"10px",color:"#fff",fontWeight:800,fontSize:12,letterSpacing:"0.05em",cursor:"pointer",fontFamily:"'IBM Plex Mono',monospace",transition:"opacity 0.15s",marginTop:14}} onMouseOver={e=>e.currentTarget.style.opacity=0.85} onMouseOut={e=>e.currentTarget.style.opacity=1}>▶  {btnLabel}</button></div></div>);}
+function MascheraCard({num,title,subtitle,color,onSubmit,btnLabel,children}){return(<div style={{background:"#fff",borderRadius:13,border:"1px solid #ddd",overflow:"hidden",boxShadow:"0 2px 8px rgba(0,0,0,0.06)"}}><div style={{background:`${color}18`,borderBottom:`2px solid ${color}`,padding:"15px 20px",display:"flex",alignItems:"center",gap:12}}><div style={{width:32,height:32,borderRadius:"50%",background:color,display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'DM Serif Display',serif",fontSize:18,color:"#fff",flexShrink:0}}>{num}</div><div><div style={{fontFamily:"'DM Serif Display',serif",fontSize:17,color:"#222"}}>{title}</div><div style={{fontSize:12,color:"#888",marginTop:1}}>{subtitle}</div></div></div><div style={{padding:"18px 20px"}}>{children}<button onClick={onSubmit} style={{width:"100%",background:color,border:"none",borderRadius:8,padding:"10px",color:"#fff",fontWeight:800,fontSize:14,letterSpacing:"0.05em",cursor:"pointer",fontFamily:"'IBM Plex Mono',monospace",transition:"opacity 0.15s",marginTop:14}} onMouseOver={e=>e.currentTarget.style.opacity=0.85} onMouseOut={e=>e.currentTarget.style.opacity=1}>▶  {btnLabel}</button></div></div>);}
 function PortaleRow({portale,rowBg,TD,onEdit,onDelete}){
   const [show,setShow]=useState(false);
   return(<tr className="rh" style={{background:rowBg}}>
     <td style={{...TD,fontWeight:700,color:"#222",whiteSpace:"nowrap",minWidth:160}}>{portale.nome}</td>
-    <td style={{...TD,maxWidth:280}}>{portale.url?(<a href={portale.url} target="_blank" rel="noopener noreferrer" style={{color:"#1565c0",textDecoration:"none",fontSize:11,fontFamily:"'IBM Plex Mono',monospace",wordBreak:"break-all"}}>{portale.url}</a>):<span style={{color:"#ccc"}}>—</span>}</td>
-    <td style={{...TD,fontFamily:"'IBM Plex Mono',monospace",fontSize:11,color:"#444",wordBreak:"break-all",maxWidth:200}}>{portale.username||<span style={{color:"#ccc"}}>—</span>}</td>
-    <td style={{...TD,whiteSpace:"nowrap"}}>{portale.password?(<div style={{display:"flex",alignItems:"center",gap:6}}><span style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:11,color:show?"#222":"#bbb",letterSpacing:show?"0":"3px"}}>{show?portale.password:"••••••••"}</span><button onClick={()=>setShow(s=>!s)} style={{background:"none",border:"none",cursor:"pointer",fontSize:14,color:"#888",padding:"0 2px"}}>{show?"🙈":"👁"}</button></div>):<span style={{color:"#ccc"}}>—</span>}</td>
-    <td style={{...TD,maxWidth:250,fontSize:11,color:"#555",lineHeight:1.4}}>{portale.note||<span style={{color:"#ccc"}}>—</span>}</td>
+    <td style={{...TD,maxWidth:280}}>{portale.url?(<a href={portale.url} target="_blank" rel="noopener noreferrer" style={{color:"#1565c0",textDecoration:"none",fontSize:13,fontFamily:"'IBM Plex Mono',monospace",wordBreak:"break-all"}}>{portale.url}</a>):<span style={{color:"#ccc"}}>—</span>}</td>
+    <td style={{...TD,fontFamily:"'IBM Plex Mono',monospace",fontSize:13,color:"#444",wordBreak:"break-all",maxWidth:200}}>{portale.username||<span style={{color:"#ccc"}}>—</span>}</td>
+    <td style={{...TD,whiteSpace:"nowrap"}}>{portale.password?(<div style={{display:"flex",alignItems:"center",gap:6}}><span style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:13,color:show?"#222":"#bbb",letterSpacing:show?"0":"3px"}}>{show?portale.password:"••••••••"}</span><button onClick={()=>setShow(s=>!s)} style={{background:"none",border:"none",cursor:"pointer",fontSize:16,color:"#888",padding:"0 2px"}}>{show?"🙈":"👁"}</button></div>):<span style={{color:"#ccc"}}>—</span>}</td>
+    <td style={{...TD,maxWidth:250,fontSize:13,color:"#555",lineHeight:1.4}}>{portale.note||<span style={{color:"#ccc"}}>—</span>}</td>
     <td style={{...TD,textAlign:"center",whiteSpace:"nowrap"}}><button className="ab ed" onClick={onEdit}>✏️</button>{" "}<button className="ab dl" onClick={onDelete}>🗑️</button></td>
   </tr>);
 }
-function Spinner({msg}){return(<div style={{minHeight:"100vh",background:"#f0f0f0",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:16}}><div style={{fontFamily:"'DM Serif Display',serif",fontSize:22,color:"#2c2c2c"}}>Monitoraggio Scadenze</div><div style={{width:36,height:36,border:"4px solid #ddd",borderTop:"4px solid #2c2c2c",borderRadius:"50%",animation:"spin 0.8s linear infinite"}}></div><div style={{fontSize:13,color:"#888"}}>{msg}</div><style>{`@keyframes spin{to{transform:rotate(360deg);}}`}</style></div>);}
+function Spinner({msg}){return(<div style={{minHeight:"100vh",background:"#f0f0f0",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:16}}><div style={{fontFamily:"'DM Serif Display',serif",fontSize:24,color:"#2c2c2c"}}>Monitoraggio Scadenze</div><div style={{width:36,height:36,border:"4px solid #ddd",borderTop:"4px solid #2c2c2c",borderRadius:"50%",animation:"spin 0.8s linear infinite"}}></div><div style={{fontSize:15,color:"#888"}}>{msg}</div><style>{`@keyframes spin{to{transform:rotate(360deg);}}`}</style></div>);}
 
 // ══ MAIN ══════════════════════════════════════════════════════════════════════
 export default function App(){
@@ -367,23 +367,23 @@ export default function App(){
   if(!ready)return(<Spinner msg="Connessione al database..."/>);
 
   return(<div style={{minHeight:"100vh",background:C.pageBg,fontFamily:"'IBM Plex Sans',sans-serif",color:"#222"}}>
-    <style>{`@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@400;700&display=swap');*{box-sizing:border-box;}::-webkit-scrollbar{width:5px;height:5px;background:#e8e8e8;}::-webkit-scrollbar-thumb{background:#aaa;border-radius:3px;}input:focus,select:focus,textarea:focus{border-color:#555!important;box-shadow:0 0 0 2px rgba(0,0,0,0.08);}.rh:hover{background:#f0f0f0!important;}.ab{background:none;border:1px solid transparent;border-radius:6px;cursor:pointer;padding:4px 8px;font-size:13px;transition:all 0.15s;line-height:1;color:#aaa;}.ab:hover{border-color:#ccc;}.ab.ed:hover{background:#e3f2fd;color:#1565c0;}.ab.dl:hover{background:#ffebee;color:#c62828;}.flt{background:#fff;border:1px solid #ccc;border-radius:7px;padding:7px 11px;color:#333;font-size:12px;outline:none;font-family:'IBM Plex Mono',monospace;}.flt:focus{border-color:#555;}.chip-btn{border-radius:20px;padding:3px 12px;font-size:11px;font-weight:700;cursor:pointer;transition:all 0.15s;letter-spacing:0.04em;}@keyframes spin{to{transform:rotate(360deg);}}`}</style>
+    <style>{`@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@400;700&display=swap');*{box-sizing:border-box;}::-webkit-scrollbar{width:5px;height:5px;background:#e8e8e8;}::-webkit-scrollbar-thumb{background:#aaa;border-radius:3px;}input:focus,select:focus,textarea:focus{border-color:#555!important;box-shadow:0 0 0 2px rgba(0,0,0,0.08);}.rh:hover{background:#f0f0f0!important;}.ab{background:none;border:1px solid transparent;border-radius:6px;cursor:pointer;padding:4px 8px;font-size:15px;transition:all 0.15s;line-height:1;color:#aaa;}.ab:hover{border-color:#ccc;}.ab.ed:hover{background:#e3f2fd;color:#1565c0;}.ab.dl:hover{background:#ffebee;color:#c62828;}.flt{background:#fff;border:1px solid #ccc;border-radius:7px;padding:7px 11px;color:#333;font-size:14px;outline:none;font-family:'IBM Plex Mono',monospace;}.flt:focus{border-color:#555;}.chip-btn{border-radius:20px;padding:3px 12px;font-size:13px;font-weight:700;cursor:pointer;transition:all 0.15s;letter-spacing:0.04em;}@keyframes spin{to{transform:rotate(360deg);}}`}</style>
 
     <div style={{background:C.headerBg,padding:"0 24px"}}>
       <div style={{maxWidth:1600,margin:"0 auto",display:"flex",alignItems:"center",justifyContent:"space-between",height:58}}>
-        <div><span style={{fontFamily:"'DM Serif Display',serif",fontSize:21,color:"#fff"}}>Monitoraggio </span><span style={{fontFamily:"'DM Serif Display',serif",fontSize:21,color:"#bbb"}}>Scadenze Documenti</span></div>
+        <div><span style={{fontFamily:"'DM Serif Display',serif",fontSize:23,color:"#fff"}}>Monitoraggio </span><span style={{fontFamily:"'DM Serif Display',serif",fontSize:23,color:"#bbb"}}>Scadenze Documenti</span></div>
         <div style={{display:"flex",gap:8,alignItems:"center"}}>
-          {saving&&<span style={{fontSize:11,color:"#aaa",fontFamily:"'IBM Plex Mono',monospace"}}>💾 salvo...</span>}
-          <span style={{fontSize:11,color:"#888",fontFamily:"'IBM Plex Mono',monospace"}}>{docs.length} doc · {clients.length} portali</span>
+          {saving&&<span style={{fontSize:13,color:"#aaa",fontFamily:"'IBM Plex Mono',monospace"}}>💾 salvo...</span>}
+          <span style={{fontSize:13,color:"#888",fontFamily:"'IBM Plex Mono',monospace"}}>{docs.length} doc · {clients.length} portali</span>
           <Btn onClick={()=>exportExcel(docs,clients,flags,portali)} variant="ghost" small>⬇ XLSX</Btn>
         </div>
       </div>
       <div style={{maxWidth:1600,margin:"0 auto",display:"flex"}}>
-        {TABS.map(t=>(<button key={t.id} onClick={()=>setTab(t.id)} style={{background:"none",border:"none",padding:"11px 20px",cursor:"pointer",fontFamily:"'IBM Plex Sans',sans-serif",fontWeight:700,fontSize:12,letterSpacing:"0.05em",color:tab===t.id?"#fff":"#888",borderBottom:tab===t.id?"2px solid #fff":"2px solid transparent",transition:"all 0.15s"}}>{t.label}</button>))}
+        {TABS.map(t=>(<button key={t.id} onClick={()=>setTab(t.id)} style={{background:"none",border:"none",padding:"11px 20px",cursor:"pointer",fontFamily:"'IBM Plex Sans',sans-serif",fontWeight:700,fontSize:14,letterSpacing:"0.05em",color:tab===t.id?"#fff":"#888",borderBottom:tab===t.id?"2px solid #fff":"2px solid transparent",transition:"all 0.15s"}}>{t.label}</button>))}
       </div>
     </div>
 
-    {toast&&<div style={{position:"fixed",top:18,right:18,zIndex:4000,background:toast.type==="err"?"#c62828":toast.type==="warn"?"#e65100":"#2e7d32",color:"#fff",borderRadius:9,padding:"10px 18px",fontSize:13,fontWeight:600,boxShadow:"0 4px 20px rgba(0,0,0,0.2)",maxWidth:360}}>{toast.msg}</div>}
+    {toast&&<div style={{position:"fixed",top:18,right:18,zIndex:4000,background:toast.type==="err"?"#c62828":toast.type==="warn"?"#e65100":"#2e7d32",color:"#fff",borderRadius:9,padding:"10px 18px",fontSize:15,fontWeight:600,boxShadow:"0 4px 20px rgba(0,0,0,0.2)",maxWidth:360}}>{toast.msg}</div>}
     {editDoc&&<EditDocModal doc={editDoc} cats={cats} onSave={saveDoc} onClose={()=>setEditDoc(null)}/>}
     {editClient&&<EditClientModal name={editClient} docs={docs} flags={flags} onSave={n=>saveClient(editClient,n)} onClose={()=>setEditClient(null)}/>}
     {showNewCat&&<NewCatModal cats={cats} onSave={addCat} onClose={()=>setShowNewCat(false)}/>}
@@ -393,36 +393,36 @@ export default function App(){
     <div style={{maxWidth:1600,margin:"0 auto",padding:"20px 24px"}}>
       {tab==="scadenzario"&&(<div>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12,flexWrap:"wrap",gap:8}}>
-          <h2 style={{fontFamily:"'DM Serif Display',serif",fontSize:20,color:"#222",margin:0}}>Documenti — <span style={{color:"#555"}}>{filteredDocs.length}</span>{filteredDocs.length!==docs.length&&<span style={{color:"#aaa"}}> / {docs.length}</span>}</h2>
+          <h2 style={{fontFamily:"'DM Serif Display',serif",fontSize:22,color:"#222",margin:0}}>Documenti — <span style={{color:"#555"}}>{filteredDocs.length}</span>{filteredDocs.length!==docs.length&&<span style={{color:"#aaa"}}> / {docs.length}</span>}</h2>
           <div style={{display:"flex",gap:8,flexWrap:"wrap",alignItems:"center"}}>
             <input className="flt" placeholder="🔍 Cerca..." value={filterText} onChange={e=>setFilterText(e.target.value)} style={{width:170}}/>
             <select className="flt" value={filterCat} onChange={e=>setFilterCat(e.target.value)}><option value="">Tutte le categorie</option>{Object.values(cats).sort().map(c=><option key={c} value={c}>{c}</option>)}</select>
             <select className="flt" value={filterStato} onChange={e=>setFilterStato(e.target.value)}><option value="">Tutti gli stati</option>{STATI.map(s=><option key={s} value={s}>{s}</option>)}</select>
-            {(filterText||filterCat||filterStato)&&<button onClick={()=>{setFilterText("");setFilterCat("");setFilterStato("");}} style={{background:"none",border:"none",color:"#888",cursor:"pointer",fontSize:12}}>✕ Reset</button>}
+            {(filterText||filterCat||filterStato)&&<button onClick={()=>{setFilterText("");setFilterCat("");setFilterStato("");}} style={{background:"none",border:"none",color:"#888",cursor:"pointer",fontSize:14}}>✕ Reset</button>}
             <Btn onClick={()=>setTab("maschera")} small>+ Nuovo</Btn>
           </div>
         </div>
         <div style={{display:"flex",gap:6,marginBottom:12,flexWrap:"wrap"}}>
           {STATI.map(s=>{const cnt=docs.filter(d=>stato(d)===s).length;if(!cnt)return null;const sc=statoColor(s);const active=filterStato===s;return(<button key={s} className="chip-btn" onClick={()=>setFilterStato(active?"":s)} style={{background:active?sc.bg:sc.flagBg,color:active?sc.text:sc.flagText,border:`1px solid ${sc.bg}`}}>{s} ({cnt})</button>);})}
-          <span style={{fontSize:11,color:"#aaa",alignSelf:"center",marginLeft:4}}>Senza scadenza: {docs.filter(d=>!d.durata||!d.dataEmissione).length}</span>
+          <span style={{fontSize:13,color:"#aaa",alignSelf:"center",marginLeft:4}}>Senza scadenza: {docs.filter(d=>!d.durata||!d.dataEmissione).length}</span>
         </div>
         <div style={{overflowX:"auto",borderRadius:11,border:"1px solid #ddd",background:"#fff",boxShadow:"0 1px 4px rgba(0,0,0,0.06)"}}>
-          <table style={{width:"100%",borderCollapse:"collapse",fontSize:12}}>
-            <thead><tr style={{background:"#f5f5f5"}}>{["Codice","Categoria","Documento","Data Emissione","Durata","Scadenza","Giorni","Stato","Azioni"].map(h=>(<th key={h} style={{padding:"10px 13px",textAlign:["Azioni","Giorni","Durata"].includes(h)?"center":"left",fontWeight:700,fontSize:10,letterSpacing:"0.07em",textTransform:"uppercase",color:"#666",borderBottom:"2px solid #e0e0e0",whiteSpace:"nowrap"}}>{h}</th>))}</tr></thead>
+          <table style={{width:"100%",borderCollapse:"collapse",fontSize:14}}>
+            <thead><tr style={{background:"#f5f5f5"}}>{["Codice","Categoria","Documento","Data Emissione","Durata","Scadenza","Giorni","Stato","Azioni"].map(h=>(<th key={h} style={{padding:"10px 13px",textAlign:["Azioni","Giorni","Durata"].includes(h)?"center":"left",fontWeight:700,fontSize:12,letterSpacing:"0.07em",textTransform:"uppercase",color:"#666",borderBottom:"2px solid #e0e0e0",whiteSpace:"nowrap"}}>{h}</th>))}</tr></thead>
             <tbody>{filteredDocs.map((d,i)=>{
               const exp=d.dataEmissione&&d.durata?addMonths(d.dataEmissione,+d.durata):null;
               const days=exp?diffDays(exp):null;
               const s=stato(d),sc=s?statoColor(s):null;
               const rowBg=s?sc.flagBg:(i%2===0?C.rowEven:C.rowOdd);
               return(<tr key={d.id+i} className="rh" style={{background:rowBg}}>
-                <td style={{...TD,fontFamily:"'IBM Plex Mono',monospace",fontSize:11,color:"#444",fontWeight:700,whiteSpace:"nowrap"}}>{d.id}</td>
-                <td style={{...TD}}><span style={{background:"#eeeeee",color:"#555",borderRadius:4,padding:"2px 6px",fontSize:10,whiteSpace:"nowrap"}}>{d.cat}</span></td>
+                <td style={{...TD,fontFamily:"'IBM Plex Mono',monospace",fontSize:13,color:"#444",fontWeight:700,whiteSpace:"nowrap"}}>{d.id}</td>
+                <td style={{...TD}}><span style={{background:"#eeeeee",color:"#555",borderRadius:4,padding:"2px 6px",fontSize:12,whiteSpace:"nowrap"}}>{d.cat}</span></td>
                 <td style={{...TD,fontWeight:600,color:"#222",maxWidth:280}}>{d.nome}</td>
-                <td style={{...TD,fontFamily:"'IBM Plex Mono',monospace",fontSize:11,color:"#666",whiteSpace:"nowrap"}}>{fmtDate(d.dataEmissione)}</td>
-                <td style={{...TD,textAlign:"center",color:"#888",fontSize:11}}>{d.durata?d.durata+"m":"—"}</td>
-                <td style={{...TD,fontFamily:"'IBM Plex Mono',monospace",fontSize:11,color:"#666",whiteSpace:"nowrap"}}>{exp?fmtDate(exp):"—"}</td>
-                <td style={{...TD,textAlign:"center",fontFamily:"'IBM Plex Mono',monospace",fontWeight:700,fontSize:11,color:days===null?"#aaa":sc?sc.bg:"#333"}}>{days===null?"—":days+" gg"}</td>
-                <td style={{...TD,whiteSpace:"nowrap"}}>{s&&<span style={{background:sc.bg,color:sc.text,borderRadius:5,padding:"2px 8px",fontSize:10,fontWeight:800,letterSpacing:"0.05em"}}>{s}</span>}</td>
+                <td style={{...TD,fontFamily:"'IBM Plex Mono',monospace",fontSize:13,color:"#666",whiteSpace:"nowrap"}}>{fmtDate(d.dataEmissione)}</td>
+                <td style={{...TD,textAlign:"center",color:"#888",fontSize:13}}>{d.durata?d.durata+"m":"—"}</td>
+                <td style={{...TD,fontFamily:"'IBM Plex Mono',monospace",fontSize:13,color:"#666",whiteSpace:"nowrap"}}>{exp?fmtDate(exp):"—"}</td>
+                <td style={{...TD,textAlign:"center",fontFamily:"'IBM Plex Mono',monospace",fontWeight:700,fontSize:13,color:days===null?"#aaa":sc?sc.bg:"#333"}}>{days===null?"—":days+" gg"}</td>
+                <td style={{...TD,whiteSpace:"nowrap"}}>{s&&<span style={{background:sc.bg,color:sc.text,borderRadius:5,padding:"2px 8px",fontSize:12,fontWeight:800,letterSpacing:"0.05em"}}>{s}</span>}</td>
                 <td style={{...TD,textAlign:"center",whiteSpace:"nowrap"}}><button className="ab ed" onClick={()=>setEditDoc(d)}>✏️</button>{" "}<button className="ab dl" onClick={()=>setConfirmDel({type:"doc",payload:d.id})}>🗑️</button></td>
               </tr>);
             })}</tbody>
@@ -432,24 +432,24 @@ export default function App(){
 
       {tab==="clienti"&&(<div>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12,flexWrap:"wrap",gap:8}}>
-          <h2 style={{fontFamily:"'DM Serif Display',serif",fontSize:20,color:"#222",margin:0}}>Matrice Portali — <span style={{color:"#555"}}>{filteredClients.length}</span>{filteredClients.length!==clients.length&&<span style={{color:"#aaa"}}> / {clients.length}</span>}</h2>
+          <h2 style={{fontFamily:"'DM Serif Display',serif",fontSize:22,color:"#222",margin:0}}>Matrice Portali — <span style={{color:"#555"}}>{filteredClients.length}</span>{filteredClients.length!==clients.length&&<span style={{color:"#aaa"}}> / {clients.length}</span>}</h2>
           <div style={{display:"flex",gap:8,alignItems:"center"}}>
             <input className="flt" placeholder="🔍 Filtra portali..." value={filterClient} onChange={e=>setFilterClient(e.target.value)} style={{width:190}}/>
-            {filterClient&&<button onClick={()=>setFilterClient("")} style={{background:"none",border:"none",color:"#888",cursor:"pointer",fontSize:12}}>✕</button>}
+            {filterClient&&<button onClick={()=>setFilterClient("")} style={{background:"none",border:"none",color:"#888",cursor:"pointer",fontSize:14}}>✕</button>}
             <Btn onClick={()=>setTab("maschera")} small>+ Nuovo portale</Btn>
           </div>
         </div>
-        <p style={{fontSize:11,color:"#aaa",marginBottom:10,fontStyle:"italic"}}>Clicca ✔/· per modificare i flag. ✏️/🗑️ nell'intestazione per rinominare o eliminare.</p>
+        <p style={{fontSize:13,color:"#aaa",marginBottom:10,fontStyle:"italic"}}>Clicca ✔/· per modificare i flag. ✏️/🗑️ nell'intestazione per rinominare o eliminare.</p>
         <div style={{overflowX:"auto",borderRadius:11,border:"1px solid #ddd",boxShadow:"0 1px 4px rgba(0,0,0,0.06)"}}>
-          <table style={{borderCollapse:"collapse",fontSize:11}}>
+          <table style={{borderCollapse:"collapse",fontSize:13}}>
             <thead><tr style={{background:C.matrixHeaderBg}}>
-              <th style={{padding:"9px 11px",textAlign:"left",fontWeight:700,fontSize:9,letterSpacing:"0.07em",textTransform:"uppercase",color:"#ccc",borderBottom:"1px solid #444",minWidth:70,position:"sticky",left:0,background:C.matrixHeaderBg,zIndex:10}}>Codice</th>
-              <th style={{padding:"9px 11px",textAlign:"left",fontWeight:700,fontSize:9,letterSpacing:"0.07em",textTransform:"uppercase",color:"#ccc",borderBottom:"1px solid #444",minWidth:230,position:"sticky",left:62,background:C.matrixHeaderBg,zIndex:10}}>Documento</th>
+              <th style={{padding:"9px 11px",textAlign:"left",fontWeight:700,fontSize:11,letterSpacing:"0.07em",textTransform:"uppercase",color:"#ccc",borderBottom:"1px solid #444",minWidth:70,position:"sticky",left:0,background:C.matrixHeaderBg,zIndex:10}}>Codice</th>
+              <th style={{padding:"9px 11px",textAlign:"left",fontWeight:700,fontSize:11,letterSpacing:"0.07em",textTransform:"uppercase",color:"#ccc",borderBottom:"1px solid #444",minWidth:230,position:"sticky",left:62,background:C.matrixHeaderBg,zIndex:10}}>Documento</th>
               {filteredClients.map(c=>(<th key={c} style={{padding:"7px 5px 4px",textAlign:"center",borderBottom:"1px solid #444",minWidth:96,background:C.matrixHeaderBg}}>
-                <div style={{fontWeight:700,fontSize:9,color:"#ccc",marginBottom:4,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis",maxWidth:88,margin:"0 auto 4px"}} title={c}>{c}</div>
+                <div style={{fontWeight:700,fontSize:11,color:"#ccc",marginBottom:4,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis",maxWidth:88,margin:"0 auto 4px"}} title={c}>{c}</div>
                 <div style={{display:"flex",justifyContent:"center",gap:2}}>
-                  <button className="ab ed" style={{fontSize:10,padding:"2px 4px",color:"#999"}} onClick={()=>setEditClient(c)}>✏️</button>
-                  <button className="ab dl" style={{fontSize:10,padding:"2px 4px",color:"#999"}} onClick={()=>setConfirmDel({type:"client",payload:c})}>🗑️</button>
+                  <button className="ab ed" style={{fontSize:12,padding:"2px 4px",color:"#999"}} onClick={()=>setEditClient(c)}>✏️</button>
+                  <button className="ab dl" style={{fontSize:12,padding:"2px 4px",color:"#999"}} onClick={()=>setConfirmDel({type:"client",payload:c})}>🗑️</button>
                 </div>
               </th>))}
             </tr></thead>
@@ -458,7 +458,7 @@ export default function App(){
                 const s=stato(d),sc=s?statoColor(s):null;
                 const stickyBg=i%2===0?"#f8f8f8":"#ffffff";
                 return(<tr key={d.id+i} className="rh" style={{borderBottom:"1px solid #eee"}}>
-                  <td style={{padding:"7px 11px",fontFamily:"'IBM Plex Mono',monospace",fontSize:10,color:"#555",fontWeight:700,position:"sticky",left:0,background:stickyBg,zIndex:5,whiteSpace:"nowrap"}}>{d.id}</td>
+                  <td style={{padding:"7px 11px",fontFamily:"'IBM Plex Mono',monospace",fontSize:12,color:"#555",fontWeight:700,position:"sticky",left:0,background:stickyBg,zIndex:5,whiteSpace:"nowrap"}}>{d.id}</td>
                   <td style={{padding:"7px 11px",color:"#333",fontWeight:600,position:"sticky",left:62,background:stickyBg,zIndex:5,maxWidth:230,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}} title={d.nome}>{d.nome}</td>
                   {filteredClients.map(c=>{
                     const has=!!flags[flagKey(d.id,c)];
@@ -466,15 +466,15 @@ export default function App(){
                     const cellText=has?(sc?sc.flagText:"#333"):"#666";
                     const cellBorder=has?(sc?`1px solid ${sc.bg}`:"1px solid #aaa"):"1px solid #4a4a4a";
                     return(<td key={c} style={{padding:"5px",textAlign:"center",background:C.matrixCellBg}}>
-                      <button onClick={()=>toggleFlag(d.id,c)} style={{background:cellBg,border:cellBorder,borderRadius:5,width:28,height:24,cursor:"pointer",fontSize:13,color:cellText,transition:"all 0.12s",fontWeight:has?800:400}}>{has?"✔":"·"}</button>
+                      <button onClick={()=>toggleFlag(d.id,c)} style={{background:cellBg,border:cellBorder,borderRadius:5,width:28,height:24,cursor:"pointer",fontSize:15,color:cellText,transition:"all 0.12s",fontWeight:has?800:400}}>{has?"✔":"·"}</button>
                     </td>);
                   })}
                 </tr>);
               })}
               <tr style={{background:"#f0f0f0",borderTop:"2px solid #ccc"}}>
                 <td style={{padding:"8px 11px",position:"sticky",left:0,background:"#f0f0f0",zIndex:5}}></td>
-                <td style={{padding:"8px 11px",fontWeight:700,fontSize:11,color:"#555",position:"sticky",left:62,background:"#f0f0f0",zIndex:5}}>TOTALE</td>
-                {filteredClients.map(c=>(<td key={c} style={{padding:"8px 5px",textAlign:"center",fontFamily:"'IBM Plex Mono',monospace",fontWeight:800,fontSize:13,color:"#333",background:C.matrixCellBg}}>{docs.filter(d=>flags[flagKey(d.id,c)]).length}</td>))}
+                <td style={{padding:"8px 11px",fontWeight:700,fontSize:13,color:"#555",position:"sticky",left:62,background:"#f0f0f0",zIndex:5}}>TOTALE</td>
+                {filteredClients.map(c=>(<td key={c} style={{padding:"8px 5px",textAlign:"center",fontFamily:"'IBM Plex Mono',monospace",fontWeight:800,fontSize:15,color:"#333",background:C.matrixCellBg}}>{docs.filter(d=>flags[flagKey(d.id,c)]).length}</td>))}
               </tr>
             </tbody>
           </table>
@@ -483,17 +483,17 @@ export default function App(){
 
       {tab==="anagrafica"&&(<div>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12,flexWrap:"wrap",gap:8}}>
-          <h2 style={{fontFamily:"'DM Serif Display',serif",fontSize:20,color:"#222",margin:0}}>Anagrafica Portali — <span style={{color:"#555"}}>{filteredPortali.length}</span>{filteredPortali.length!==portali.length&&<span style={{color:"#aaa"}}> / {portali.length}</span>}</h2>
+          <h2 style={{fontFamily:"'DM Serif Display',serif",fontSize:22,color:"#222",margin:0}}>Anagrafica Portali — <span style={{color:"#555"}}>{filteredPortali.length}</span>{filteredPortali.length!==portali.length&&<span style={{color:"#aaa"}}> / {portali.length}</span>}</h2>
           <div style={{display:"flex",gap:8,alignItems:"center"}}>
             <input className="flt" placeholder="🔍 Cerca..." value={filterPortale} onChange={e=>setFilterPortale(e.target.value)} style={{width:200}}/>
-            {filterPortale&&<button onClick={()=>setFilterPortale("")} style={{background:"none",border:"none",color:"#888",cursor:"pointer",fontSize:12}}>✕</button>}
+            {filterPortale&&<button onClick={()=>setFilterPortale("")} style={{background:"none",border:"none",color:"#888",cursor:"pointer",fontSize:14}}>✕</button>}
             <Btn onClick={()=>setPortaleModal("new")} small>+ Nuovo portale</Btn>
           </div>
         </div>
-        <p style={{fontSize:11,color:"#aaa",marginBottom:10,fontStyle:"italic"}}>🔒 Password mascherata — clicca 👁 per visualizzarla.</p>
+        <p style={{fontSize:13,color:"#aaa",marginBottom:10,fontStyle:"italic"}}>🔒 Password mascherata — clicca 👁 per visualizzarla.</p>
         <div style={{overflowX:"auto",borderRadius:11,border:"1px solid #ddd",background:"#fff",boxShadow:"0 1px 4px rgba(0,0,0,0.06)"}}>
-          <table style={{width:"100%",borderCollapse:"collapse",fontSize:12}}>
-            <thead><tr style={{background:"#f5f5f5"}}>{["Cliente","URL Portale","Username","Password","Note","Azioni"].map(h=>(<th key={h} style={{padding:"10px 13px",textAlign:h==="Azioni"?"center":"left",fontWeight:700,fontSize:10,letterSpacing:"0.07em",textTransform:"uppercase",color:"#666",borderBottom:"2px solid #e0e0e0",whiteSpace:"nowrap"}}>{h}</th>))}</tr></thead>
+          <table style={{width:"100%",borderCollapse:"collapse",fontSize:14}}>
+            <thead><tr style={{background:"#f5f5f5"}}>{["Cliente","URL Portale","Username","Password","Note","Azioni"].map(h=>(<th key={h} style={{padding:"10px 13px",textAlign:h==="Azioni"?"center":"left",fontWeight:700,fontSize:12,letterSpacing:"0.07em",textTransform:"uppercase",color:"#666",borderBottom:"2px solid #e0e0e0",whiteSpace:"nowrap"}}>{h}</th>))}</tr></thead>
             <tbody>{filteredPortali.map((p,i)=>(<PortaleRow key={p.nome+i} portale={p} rowBg={i%2===0?C.rowEven:C.rowOdd} TD={TD} onEdit={()=>setPortaleModal(p)} onDelete={()=>setConfirmDel({type:"portale",payload:p.nome})}/>))}</tbody>
           </table>
         </div>
@@ -502,10 +502,10 @@ export default function App(){
       {tab==="maschera"&&(<div>
         <div style={{background:"#fff",border:"1px solid #ddd",borderRadius:11,padding:"14px 18px",marginBottom:20,boxShadow:"0 1px 4px rgba(0,0,0,0.05)"}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
-            <span style={{fontWeight:700,fontSize:13,color:"#333",fontFamily:"'DM Serif Display',serif"}}>Categorie registrate</span>
+            <span style={{fontWeight:700,fontSize:15,color:"#333",fontFamily:"'DM Serif Display',serif"}}>Categorie registrate</span>
             <Btn onClick={()=>setShowNewCat(true)} small variant="accent">+ Nuova categoria</Btn>
           </div>
-          <div style={{display:"flex",flexWrap:"wrap",gap:6}}>{Object.entries(cats).sort((a,b)=>a[0].localeCompare(b[0])).map(([k,v])=>(<span key={k} style={{background:"#f5f5f5",border:"1px solid #ddd",borderRadius:6,padding:"3px 10px",fontSize:11,fontFamily:"'IBM Plex Mono',monospace",color:"#444"}}><strong style={{color:"#222"}}>{k}</strong> — {v}</span>))}</div>
+          <div style={{display:"flex",flexWrap:"wrap",gap:6}}>{Object.entries(cats).sort((a,b)=>a[0].localeCompare(b[0])).map(([k,v])=>(<span key={k} style={{background:"#f5f5f5",border:"1px solid #ddd",borderRadius:6,padding:"3px 10px",fontSize:13,fontFamily:"'IBM Plex Mono',monospace",color:"#444"}}><strong style={{color:"#222"}}>{k}</strong> — {v}</span>))}</div>
         </div>
         <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(310px,1fr))",gap:18}}>
           <MascheraCard num="1" title="Nuovo documento" subtitle="Aggiunge riga allo Scadenzario" color="#37474f" btnLabel="Inserisci documento" onSubmit={()=>{if(!fDoc.nome.trim()||!fDoc.cat){toast_("Inserire categoria e nome.","err");return;}insertDoc({id:fDoc.id,cat:fDoc.cat,nome:fDoc.nome,dataEmissione:fDoc.dataEmissione,durata:fDoc.durata},fDoc.cliente||null);setFDoc(f=>({...f,id:"",nome:"",dataEmissione:"",durata:"",cliente:""}));}}>
@@ -520,12 +520,12 @@ export default function App(){
           </MascheraCard>
           <MascheraCard num="2" title="Nuovo portale / cliente" subtitle="Aggiunge colonna Matrice + scheda Anagrafica" color="#4a5568" btnLabel="Inserisci portale" onSubmit={()=>{if(!fCli.nome.trim()){toast_("Inserire il nome.","err");return;}insertClient(fCli.nome.trim());setPortaleModal({nome:fCli.nome.trim(),url:"",username:"",password:"",note:""});setFCli({nome:""});}}>
             <Field label="Nome portale / cliente *"><input style={IS} value={fCli.nome} onChange={e=>setFCli(f=>({...f,nome:e.target.value}))} placeholder="Es. Terna..."/></Field>
-            <p style={{fontSize:11,color:"#888",marginTop:8,lineHeight:1.5}}>Si aprirà la scheda per aggiungere URL, credenziali e note.</p>
+            <p style={{fontSize:13,color:"#888",marginTop:8,lineHeight:1.5}}>Si aprirà la scheda per aggiungere URL, credenziali e note.</p>
           </MascheraCard>
           <MascheraCard num="3" title="Assegna documento a portale" subtitle="Aggiunge flag ✔ nella Matrice" color="#5d4037" btnLabel="Assegna documento" onSubmit={()=>{if(!fAss.cliente||!fAss.doc){toast_("Seleziona portale e documento.","err");return;}assignDoc(fAss.doc,fAss.cliente);setFAss({cliente:"",doc:""});}}>
             <Field label="Portale *"><select style={IS} value={fAss.cliente} onChange={e=>setFAss(f=>({...f,cliente:e.target.value}))}><option value="">— seleziona —</option>{sortedClients.map(c=><option key={c} value={c}>{c}</option>)}</select></Field>
             <Field label="Documento *"><select style={IS} value={fAss.doc} onChange={e=>setFAss(f=>({...f,doc:e.target.value}))}><option value="">— seleziona —</option>{docs.map(d=><option key={d.id} value={d.nome}>[{d.id}] {d.nome}</option>)}</select></Field>
-            {fAss.cliente&&fAss.doc&&(()=>{const doc=docs.find(d=>d.nome===fAss.doc);const already=doc&&!!flags[flagKey(doc.id,fAss.cliente)];return already?<div style={{background:"#fff3e0",border:"1px solid #ffb74d",borderRadius:7,padding:"8px 11px",fontSize:11,color:"#e65100",marginTop:4}}>⚠ Già presente.</div>:<div style={{background:"#e8f5e9",border:"1px solid #a5d6a7",borderRadius:7,padding:"8px 11px",fontSize:11,color:"#2e7d32",marginTop:4}}>✔ Verrà aggiunto il flag.</div>;})()}
+            {fAss.cliente&&fAss.doc&&(()=>{const doc=docs.find(d=>d.nome===fAss.doc);const already=doc&&!!flags[flagKey(doc.id,fAss.cliente)];return already?<div style={{background:"#fff3e0",border:"1px solid #ffb74d",borderRadius:7,padding:"8px 11px",fontSize:13,color:"#e65100",marginTop:4}}>⚠ Già presente.</div>:<div style={{background:"#e8f5e9",border:"1px solid #a5d6a7",borderRadius:7,padding:"8px 11px",fontSize:13,color:"#2e7d32",marginTop:4}}>✔ Verrà aggiunto il flag.</div>;})()}
           </MascheraCard>
         </div>
       </div>)}
