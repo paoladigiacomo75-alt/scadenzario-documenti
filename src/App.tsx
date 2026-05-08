@@ -219,22 +219,7 @@ export default function App(){
         const [dbDocs,dbClients,dbFlags,dbPortali,dbCats]=await Promise.all([
           api.get("docs"),api.get("clients"),api.get("flags"),api.get("portali"),api.get("cats")
         ]);
-        if(dbDocs.length===0){
-          // Prima esecuzione: carica i dati seed
-          toast_("Prima configurazione: caricamento dati...");
-          const chunks=(arr,n)=>Array.from({length:Math.ceil(arr.length/n)},(_,i)=>arr.slice(i*n,(i+1)*n));
-          await api.upsert("docs",SEED_DOCS.map(d=>({id:d.id,cat:d.cat,nome:d.nome,durata:d.durata,data_emissione:d.dataEmissione||null})));
-          await api.upsert("clients",SEED_CLIENTS.map(n=>({nome:n})));
-          const flagRows=Object.keys(SEED_FLAGS).map(k=>{const[doc_id,client_nome]=k.split("___");return{doc_id,client_nome};});
-          for(const chunk of chunks(flagRows,500)) await api.upsert("flags",chunk);
-          await api.upsert("portali",SEED_PORTALI.map(p=>({nome:p.nome,url:p.url||null,username:p.username||null,password:p.password||null,note:p.note||null})));
-          await api.upsert("cats",Object.entries(SEED_CATS).map(([prefix,label])=>({prefix,label})));
-          // Ricarica
-          const[d,c,f,p,ct]=await Promise.all([api.get("docs"),api.get("clients"),api.get("flags"),api.get("portali"),api.get("cats")]);
-          loadState(d,c,f,p,ct);
-        } else {
-          loadState(dbDocs,dbClients,dbFlags,dbPortali,dbCats);
-        }
+        loadState(dbDocs,dbClients,dbFlags,dbPortali,dbCats);
         setReady(true);
       }catch(e){
         console.error(e);
